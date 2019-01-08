@@ -35,6 +35,7 @@
     "objection": "^1.4.0",
     "pg": "^7.7.1",
     "pg-native": "^3.0.0",
+    "ramda": "^0.26.1",
     "vision": "^5.4.3"
   },
   "devDependencies": {

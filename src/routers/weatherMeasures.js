@@ -1,5 +1,6 @@
 import Models from '../models';
 import Joi from 'joi'
+import * as R from 'ramda'
 
 const WeatherMeasure = Models.WeatherMeasure;
 const path = '/weather_measures';
@@ -12,6 +13,11 @@ async function getWeatherMeasures (request, h) {
       .query()
       .select(columns)
       .orderBy('created_at', 'desc')
+      .modify((queryBuilder) => {
+        if(R.has('begin_date', request.query) && R.has('end_date', request.query)) {
+          queryBuilder.whereBetween('created_at', [request.query.begin_date, request.query.end_date])
+        }
+      })
 
     return weatherMeasures;
   } catch (error) {
@@ -19,7 +25,7 @@ async function getWeatherMeasures (request, h) {
   }
 }
 
-async function getLatestWeatherMeasures (request, h) {
+async function getHourlyWeatherMeasures (request, h) {
   try {
     const weatherMeasures = await WeatherMeasure
       .query()
@@ -60,18 +66,24 @@ export default [
     options: {
       description: 'Get all weather measures',
       notes: 'Returns all weather measures',
+      validate: {
+        query: {
+            start_date: Joi.date(),
+            end_date: Joi.date()
+        }
+      },
       auth: false,
       tags: ['api']
     }
   },
 
   {
-    path: path + '/latest',
+    path: path + '/hourly',
     method: 'GET',
-    handler: getLatestWeatherMeasures,
+    handler: getHourlyWeatherMeasures,
     config: {
-      description: 'Get latest weather measures',
-      notes: 'Return latest weather measures ordered by created at date',
+      description: 'Get hourly weather measures',
+      notes: 'Return hourly weather measures ordered by created at date',
       auth: false,
       tags: ['api']
     }
