@@ -14,8 +14,8 @@ async function getWeatherMeasures (request, h) {
       .select(columns)
       .orderBy('created_at', 'desc')
       .modify((queryBuilder) => {
-        if(R.has('begin_date', request.query) && R.has('end_date', request.query)) {
-          queryBuilder.whereBetween('created_at', [request.query.begin_date, request.query.end_date])
+        if(R.has('start_date', request.query) && R.has('end_date', request.query)) {
+          queryBuilder.whereBetween('created_at', [request.query.start_date, request.query.end_date])
         }
       })
 
