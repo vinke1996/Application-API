@@ -25,20 +25,6 @@ async function getWeatherMeasures (request, h) {
   }
 }
 
-async function getHourlyWeatherMeasures (request, h) {
-  try {
-    const weatherMeasures = await WeatherMeasure
-      .query()
-      .select(columns)
-      .orderBy('created_at', 'desc')
-      .first();
-
-    return weatherMeasures;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 async function postWeatherMeasures (request, h) {
   try {
     const weatherMeasures = await WeatherMeasure
@@ -77,18 +63,6 @@ export default [
     }
   },
 
-  {
-    path: path + '/hourly',
-    method: 'GET',
-    handler: getHourlyWeatherMeasures,
-    config: {
-      description: 'Get hourly weather measures',
-      notes: 'Return hourly weather measures ordered by created at date',
-      auth: false,
-      tags: ['api']
-    }
-  },
-  
   {
     path: path,
     method: 'POST',
